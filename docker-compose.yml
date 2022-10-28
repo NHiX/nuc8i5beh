@@ -1,0 +1,102 @@
+version: "3"
+services:
+  guacamole:
+    image: jwetzell/guacamole:arm32v7
+    container_name: guacamole
+    environment:
+      - TZ=Europe/Paris
+    volumes:
+      - /home/pi/config/guacamole:/config
+    network_mode: "host"
+    ports:
+    - 8080:8080
+  caddy:
+    image: arm64v8/caddy
+    container_name: caddy
+    volumes:
+      - /home/pi/config/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - /home/pi/data/caddy:/data
+      - /home/pi/config/caddy:/config
+    ports:
+    - 80:80
+    - 443:443
+    network_mode: "host"
+    depends_on:
+      - guacamole
+      - emulatorjs
+      - sabnzbd
+      - rutorrent
+  sabnzbd:
+    image: lscr.io/linuxserver/sabnzbd:latest
+    container_name: sabnzbd
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+    volumes:
+      - /home/pi/config/sabnzbd:/config
+      - /home/pi/Downloads:/downloads #optional
+      - /home/pi/incomplete:/incomplete-downloads #optional
+    ports:
+      - 8081:8080
+    restart: unless-stopped
+  gluetun:
+    image: qmcgaw/gluetun
+    container_name: gluetun
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    ports:
+      - 8888:8888/tcp # HTTP proxy
+      - 8388:8388/tcp # Shadowsocks
+      - 8388:8388/udp # Shadowsocks
+      - 84:80 # Ports rutorrent
+      - 5000:5000
+      - 51413:51413
+      - 6881:6881/udp
+    volumes:
+      - /home/pi/config/vpn/gluetun
+    environment:
+      # See https://github.com/qdm12/gluetun/wiki
+      - VPN_SERVICE_PROVIDER=privado
+      - VPN_TYPE=openvpn
+      # OpenVPN:
+      - OPENVPN_USER=********
+      - OPENVPN_PASSWORD=*********
+      # Wireguard:
+      # - WIREGUARD_PRIVATE_KEY=wOEI9rqqbDwnN8/Bpp22sVz48T71vJ4fYmFWujulwUU=
+      # - WIREGUARD_ADDRESSES=10.64.222.21/32
+      - TZ=Europe/Paris
+  rutorrent:
+    image: ghcr.io/linuxserver/rutorrent
+    container_name: rutorrent
+    environment:
+      - PUID=1000
+      - PGID=1000
+    depends_on:
+      - gluetun
+    volumes:
+      - /home/pi/config/rutorrent:/config
+      - /home/pi/Downloads:/downloads
+    network_mode : "container:gluetun"
+    restart: unless-stopped
+  emulatorjs:
+    image: lscr.io/linuxserver/emulatorjs:latest
+    container_name: emulatorjs
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+      - SUBFOLDER=/
+    volumes:
+      - /home/pi/config/emulatorjs:/config
+      - /home/pi/data:/data
+    ports:
+      - 3000:3000
+      - 81:80
+      - 4001:4001
+    restart: unless-stopped
+volumes:
+  postgres:
+    driver: local
