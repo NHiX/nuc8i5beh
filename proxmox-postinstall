@@ -13,3 +13,7 @@ vi /etc/apt/sources.list.d/pve-enterprise.list
 commenter la première ligne avec #
 #deb https://enterprise.proxmox.com/debian/pve  bullseye pve-enterprise
 deb http://download.proxmox.com/debian/pve bullseye pve-no-subscription
+
+
+apt update && apt full-upgrade
+apt install htop mc 
