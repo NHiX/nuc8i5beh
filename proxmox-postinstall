@@ -14,7 +14,7 @@ commenter la première ligne avec #
 #deb https://enterprise.proxmox.com/debian/pve  bullseye pve-enterprise
 deb http://download.proxmox.com/debian/pve bullseye pve-no-subscription
 
-Pour profiter du VirGL
+Pour profiter du VirGL (accélération graphique)
 
 apt update && apt full-upgrade
 apt install htop mc libgl1 libegl1
