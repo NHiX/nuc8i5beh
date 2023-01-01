@@ -18,3 +18,9 @@ Pour profiter du VirGL (accélération graphique)
 
 apt update && apt full-upgrade
 apt install htop mc libgl1 libegl1
+
+Pour lister les containers LXC disponibles sous Proxmox
+pveam available --section system
+
+pveam download local ladistributionvoulu
+
