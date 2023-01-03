@@ -19,8 +19,13 @@ Pour profiter du VirGL (accélération graphique)
 apt update && apt full-upgrade
 apt install htop mc libgl1 libegl1 nfs-common nfs-kernel-server
 
+vi /etc/exports pour configurer le partage NFS
+
+
+vi /etc/fstab pour configurer le montage des partitions NFS distants
+
+
 Pour lister les containers LXC disponibles sous Proxmox
 pveam available --section system
 
 pveam download local ladistributionvoulu
-
