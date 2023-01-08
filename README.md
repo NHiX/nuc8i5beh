@@ -1,1 +1,6 @@
-Docker-compose raspberry pi 4
+diffentes choses a tester
+
+pour previsualiser les images dans le terminal
+'''
+cargo install viu
+'''
