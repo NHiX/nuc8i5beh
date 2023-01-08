@@ -6,5 +6,7 @@ cargo install viu
 ´´´
 
 previsualiser des documents Markdown avec mdcat
+´´´
 
 cargo install mdcat
+´´´
